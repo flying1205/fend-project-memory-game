@@ -85,6 +85,10 @@ h1 {
     pointer-events: none;
 }
 
+.disabled {
+    pointer-events: none;
+}
+
 
 /*
  * Styles for the Score Panel

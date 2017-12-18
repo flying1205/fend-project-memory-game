@@ -71,10 +71,12 @@ window.onload = function() {
                 current_cards = [];
                 return true;
             } else {
+                deck.className = 'deck disabled';
                 setTimeout(() => {
                     deck.children[current_cards[0][0]].className = 'card';
                     deck.children[current_cards[1][0]].className = 'card';
                     current_cards = [];
+                    deck.className = 'deck';
                     return false;
                 }, 1000);
             }
