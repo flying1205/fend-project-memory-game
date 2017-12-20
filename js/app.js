@@ -1,54 +1,115 @@
 window.onload = function() {
 
-    var card_list = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor', 'fa-bolt', 'fa-cube', 'fa-anchor', 'fa-leaf', 'fa-bicycle', 'fa-diamond', 'fa-bomb', 'fa-leaf', 'fa-bomb', 'fa-bolt', 'fa-bicycle', 'fa-paper-plane-o', 'fa-cube'];
-    var matched_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    // 卡组与状态
+    var cardList = ['fa-diamond', 'fa-paper-plane-o', 'fa-anchor', 'fa-bolt', 'fa-cube', 'fa-anchor', 'fa-leaf', 'fa-bicycle', 'fa-diamond', 'fa-bomb', 'fa-leaf', 'fa-bomb', 'fa-bolt', 'fa-bicycle', 'fa-paper-plane-o', 'fa-cube'];
+    var matchedList = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-    var current_cards = [];
+    // 翻开的卡片
+    var openedCards = [];
 
-    var moves = document.getElementsByClassName('moves')[0];
-    var steps = 0;
+    var moveArea = document.getElementsByClassName('moves')[0];
+    // 步数
+    var moves = 0;
+
+    var starArea = document.getElementsByClassName('stars')[0];
+    // 星级
+    var stars = 3;
+
+    var timeArea = document.getElementsByClassName('time')[0];
+    // 时间
+    var time = 0;
+    var intervalId;
 
     var deck = document.getElementsByClassName('deck')[0];
-
-    var restart_btn = document.getElementsByClassName('restart')[0];
-
-    function restart() {
-        card_list = shuffle(card_list);
-        matched_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        current_cards = [];
-        steps = 0;
-        moves.innerHTML = steps;
-        for (var i = 0; i < card_list.length; i++) {
-            deck.children[i].className = 'card';
-            deck.children[i].children[0].className = 'fa' + ' ' + card_list[i];
-        }
-        for (var i = 0; i < deck.children.length; i++) {
-            (function(i) {
-                deck.children[i].onclick = function(e) {
-                    steps += 1;
-                    moves.innerHTML = steps;
-                    deck.children[i].className = 'card open show';
-                    check_match(i);
-                    if (check_success()) {
-                        setTimeout(() => {
-                            alert('success!');
-                        }, 1000);
-                    }
+    // 绑定鼠标单击事件
+    for (var i = 0; i < deck.children.length; i++) {
+        (function(i) {
+            deck.children[i].onclick = function(e) {
+                moves += 1;
+                moveArea.innerHTML = moves;
+                if (moves < 30) {
+                    stars = 3;
+                } else if (moves >= 30 && moves < 40) {
+                    stars = 2;
+                } else if (moves >= 40) {
+                    stars = 1;
                 }
-            })(i);
+                drawStar();
+                deck.children[i].className = 'card open show';
+                checkMatch(i);
+                if (checkSuccess()) {
+                    clearInterval(intervalId);
+                    setTimeout(() => {
+                        // alert('success! your moves is' + moves);
+                        var again = confirm('Congratulations!\n' + 'your moves is ' + moves + '\n' + 'your spend ' + time + ' seconds\n' + 'your star is ' + stars + '\n' + 'Do you want to play again?');
+                        if (again) {
+                            restart();
+                        }
+                    }, 1000);
+                }
+            }
+        })(i);
+    }
+
+    // 画星
+    function drawStar() {
+        console.log('here1');
+        // 清空
+        var star_count = starArea.children.length;
+        for (var i = 0; i < star_count; i++) {
+            starArea.removeChild(starArea.children[0]);
+        }
+        // 重绘
+        for (var i = 0; i < stars; i++) {
+            var star_li = document.createElement('li');
+            var star_i = document.createElement('i');
+            star_i.className = 'fa fa-star';
+            star_li.appendChild(star_i);
+            starArea.appendChild(star_li);
+        }
+        console.log('here2');
+    }
+
+    // 重置
+    function restart() {
+        // 洗牌
+        cardList = shuffle(cardList);
+        // 重置状态
+        matchedList = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        // 重置打开的卡片
+        openedCards = [];
+        // 重置步数
+        moves = 0;
+        moveArea.innerHTML = moves;
+        // 重置星级
+        stars = 3;
+        drawStar();
+        // 重置时间
+        time = 0;
+        timeArea.innerHTML = time;
+        // 开启计时器
+        intervalId = setInterval(() => {
+            time += 1;
+            timeArea.innerHTML = time;
+        }, 1000);
+        for (var i = 0; i < cardList.length; i++) {
+            deck.children[i].className = 'card';
+            deck.children[i].children[0].className = 'fa' + ' ' + cardList[i];
         }
     }
 
     restart();
 
-    restart_btn.onclick = function(e) {
+    var restartBtn = document.getElementsByClassName('restart')[0];
+    restartBtn.onclick = function(e) {
         restart();
     }
 
-    function check_success() {
+    // 检查成功
+    function checkSuccess() {
         var sum = 0;
         for (var i = 0; i < 16; i++) {
-            sum += matched_list[i];
+            sum += matchedList[i];
         }
         if (sum == 16) {
             return true;
@@ -57,25 +118,26 @@ window.onload = function() {
         }
     }
 
-    function check_match(i) {
-        if (current_cards.length == 0) {
-            current_cards.push([i, card_list[i]]);
+    // 检查匹配
+    function checkMatch(i) {
+        if (openedCards.length == 0) {
+            openedCards.push([i, cardList[i]]);
             return false;
-        } else if (current_cards.length == 1) {
-            current_cards.push([i, card_list[i]]);
-            if (current_cards[0][1] == current_cards[1][1]) {
-                matched_list[current_cards[0][0]] = 1;
-                deck.children[current_cards[0][0]].className = 'card match';
-                matched_list[current_cards[1][0]] = 1;
-                deck.children[current_cards[1][0]].className = 'card match';
-                current_cards = [];
+        } else if (openedCards.length == 1) {
+            openedCards.push([i, cardList[i]]);
+            if (openedCards[0][1] == openedCards[1][1]) {
+                matchedList[openedCards[0][0]] = 1;
+                deck.children[openedCards[0][0]].className = 'card match';
+                matchedList[openedCards[1][0]] = 1;
+                deck.children[openedCards[1][0]].className = 'card match';
+                openedCards = [];
                 return true;
             } else {
                 deck.className = 'deck disabled';
                 setTimeout(() => {
-                    deck.children[current_cards[0][0]].className = 'card';
-                    deck.children[current_cards[1][0]].className = 'card';
-                    current_cards = [];
+                    deck.children[openedCards[0][0]].className = 'card';
+                    deck.children[openedCards[1][0]].className = 'card';
+                    openedCards = [];
                     deck.className = 'deck';
                     return false;
                 }, 1000);
@@ -83,6 +145,7 @@ window.onload = function() {
         }
     }
 
+    // 洗牌
     // Shuffle function from http://stackoverflow.com/a/2450976
     function shuffle(array) {
         var currentIndex = array.length,
@@ -98,15 +161,4 @@ window.onload = function() {
 
         return array;
     }
-
-    /*
-     * set up the event listener for a card. If a card is clicked:
-     *  - display the card's symbol (put this functionality in another function that you call from this one)
-     *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
-     *  - if the list already has another card, check to see if the two cards match
-     *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
-     *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
-     *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
-     *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
-     */
 }
