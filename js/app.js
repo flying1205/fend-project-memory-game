@@ -19,12 +19,16 @@ window.onload = function() {
     // 时间
     var time = 0;
     var intervalId;
+    var timing = false;
 
     var deck = document.getElementsByClassName('deck')[0];
     // 绑定鼠标单击事件
     for (var i = 0; i < deck.children.length; i++) {
         (function(i) {
             deck.children[i].onclick = function(e) {
+                if (timing == false) {
+                    startTimer();
+                }
                 moves += 1;
                 moveArea.innerHTML = moves;
                 if (moves < 30) {
@@ -38,9 +42,8 @@ window.onload = function() {
                 deck.children[i].className = 'card open show';
                 checkMatch(i);
                 if (checkSuccess()) {
-                    clearInterval(intervalId);
+                    stopTimer();
                     setTimeout(() => {
-                        // alert('success! your moves is' + moves);
                         var again = confirm('Congratulations!\n' + 'your moves is ' + moves + '\n' + 'your spend ' + time + ' seconds\n' + 'your star is ' + stars + '\n' + 'Do you want to play again?');
                         if (again) {
                             restart();
@@ -53,7 +56,6 @@ window.onload = function() {
 
     // 画星
     function drawStar() {
-        console.log('here1');
         // 清空
         var star_count = starArea.children.length;
         for (var i = 0; i < star_count; i++) {
@@ -67,10 +69,25 @@ window.onload = function() {
             star_li.appendChild(star_i);
             starArea.appendChild(star_li);
         }
-        console.log('here2');
     }
 
-    // 重置
+    // 开始计时器
+    function startTimer() {
+        // 开始计时器 
+        timing = true;
+        intervalId = setInterval(() => {
+            time += 1;
+            timeArea.innerHTML = time;
+        }, 1000);
+    }
+
+    // 停止计时器
+    function stopTimer() {
+        timing = false;
+        clearInterval(intervalId);
+    }
+
+    // 重置(除时间外其他)
     function restart() {
         // 洗牌
         cardList = shuffle(cardList);
@@ -87,11 +104,7 @@ window.onload = function() {
         // 重置时间
         time = 0;
         timeArea.innerHTML = time;
-        // 开启计时器
-        intervalId = setInterval(() => {
-            time += 1;
-            timeArea.innerHTML = time;
-        }, 1000);
+        // 重置卡片
         for (var i = 0; i < cardList.length; i++) {
             deck.children[i].className = 'card';
             deck.children[i].children[0].className = 'fa' + ' ' + cardList[i];
@@ -102,6 +115,7 @@ window.onload = function() {
 
     var restartBtn = document.getElementsByClassName('restart')[0];
     restartBtn.onclick = function(e) {
+        stopTimer();
         restart();
     }
 

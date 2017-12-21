@@ -1,20 +1,34 @@
 # Memory Game Project
 
-## Table of Contents
+## How to setup
 
-* [Instructions](#instructions)
-* [Contributing](#contributing)
+1. Copy or clone this project's folder to your computer.
 
-## Instructions
+2. Double click the 'index.html' file in the root path, you can open the game's homepage by your default browser.(the browser should be one of **_Chrome/Safari/Firefox/Opera/IE9+_** or other modern browser)
 
-The starter project has some HTML and CSS styling to display a static version of the Memory Game project. You'll need to convert this project from a static project to an interactive one. This will require modifying the HTML and CSS files, but primarily the JavaScript file.
+## How to play
 
-To get started, open `js/app.js` and start building out the app's functionality
+The game board contains 16 "cards" in the form of a grid.The single board consists of 8 different cards, each with different symbols on each side.The cards are arranged at random on the grid, and the symbols are down.The game rules are simple: turn two hidden cards each time and find the matching cards!
 
-For specific, detailed instructions, look at the project instructions in the [Udacity Classroom](https://classroom.udacity.com/me).
+Each round of games:
 
-## Contributing
+* The player turns over a card to see what the symbol is.
+* The player then opens second card and tries to find a corresponding card with the same symbol.
+* If the card matches, all two cards remain open.
+* If the card do not match, all two cards continue to be covered.
 
-This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.
+When all the cards are correctly matched, the game ends.
 
-For details, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+## Special feature
+
+* When you click the first card in a new game, the timer will start and record the time you have spent.
+* The moves-area will record the moves you have done.
+* The stars-area will record the stars you have earned according to the rules:
+  * 3 stars: moves < 30
+  * 2 stars: 30 <= moves < 40
+  * 1 star: moves > 40
+
+## Dependencies
+
+* [font-awesome](https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css)
+* [googleapis/fonts/Coda](https://fonts.googleapis.com/css?family=Coda)
