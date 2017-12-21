@@ -24,11 +24,11 @@ When all the cards are correctly matched, the game ends.
 * When you click the first card in a new game, the timer will start and record the time you have spent.
 * The moves-area will record the moves you have done.
 * The stars-area will record the stars you have earned according to the rules:
-  * 3 stars: moves < 30
-  * 2 stars: 30 <= moves < 40
-  * 1 star: moves > 40
+  * 3 stars: moves < 10
+  * 2 stars: 10 <= moves < 20
+  * 1 star: 20 <= moves
 
 ## Dependencies
 
-* [font-awesome](https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css)
+* [font-awesome](https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css)
 * [googleapis/fonts/Coda](https://fonts.googleapis.com/css?family=Coda)
